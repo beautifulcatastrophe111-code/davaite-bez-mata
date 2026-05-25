@@ -1,31 +1,36 @@
-generator client { provider = "prisma-client-js" }
+generator client {
+  provider = "prisma-client-js"
+}
 
-datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model PlayerCard {
-  id             String   @id @default(cuid())
-  slug           String   @unique
+  id             String             @id @default(cuid())
+  slug           String             @unique
   realName       String
   nickname       String
   photoUrl       String?
-  rating         Int      @default(50)
-  role           Role     @default(UNIVERSAL)
+  rating         Int                @default(50)
+  role           Role               @default(UNIVERSAL)
   rank           Rank?
   favoriteHero   String?
   team           String?
   description    String?
-  skillLaning    Int      @default(50)
-  skillFarming   Int      @default(50)
-  skillMacro     Int      @default(50)
-  skillMicro     Int      @default(50)
-  skillFighting  Int      @default(50)
-  skillHeroPool  Int      @default(50)
-  skillMental    Int      @default(50)
-  skillComms     Int      @default(50)
-  cardType       CardType @default(COMMON)
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  skillLaning    Int                @default(50)
+  skillFarming   Int                @default(50)
+  skillMacro     Int                @default(50)
+  skillMicro     Int                @default(50)
+  skillFighting  Int                @default(50)
+  skillHeroPool  Int                @default(50)
+  skillMental    Int                @default(50)
+  skillComms     Int                @default(50)
+  cardType       CardType           @default(COMMON)
+  isActive       Boolean            @default(true)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
   weeklySlots    WeeklySquadSlot[]
 }
 
@@ -37,7 +42,39 @@ model WeeklySquadSlot {
   updatedAt DateTime      @updatedAt
 }
 
-enum Role { CARRY MID OFFLANE SUPPORT HARD_SUPPORT UNIVERSAL }
-enum Rank { HERALD GUARDIAN CRUSADER ARCHON LEGEND ANCIENT DIVINE IMMORTAL }
-enum CardType { COMMON RARE EPIC LEGENDARY IMMORTAL }
-enum SquadPosition { CARRY MID OFFLANE SUPPORT HARD_SUPPORT COACH }
+enum Role {
+  CARRY
+  MID
+  OFFLANE
+  SUPPORT
+  HARD_SUPPORT
+  UNIVERSAL
+}
+
+enum Rank {
+  HERALD
+  GUARDIAN
+  CRUSADER
+  ARCHON
+  LEGEND
+  ANCIENT
+  DIVINE
+  IMMORTAL
+}
+
+enum CardType {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+  IMMORTAL
+}
+
+enum SquadPosition {
+  CARRY
+  MID
+  OFFLANE
+  SUPPORT
+  HARD_SUPPORT
+  COACH
+}
