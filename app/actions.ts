@@ -6,11 +6,19 @@ import { prisma } from '@/lib/prisma';
 import { playerCardSchema, weeklySchema } from '@/lib/validation';
 import { requireAdmin } from '@/lib/auth';
 
-async function createUniqueSlug(baseSlug: string) {
+async function getUniqueSlug(baseSlug: string, currentCardId?: string) {
   let slug = baseSlug;
   let suffix = 2;
 
-  while (await prisma.playerCard.findUnique({ where: { slug } })) {
+  while (
+    await prisma.playerCard.findFirst({
+      where: {
+        slug,
+        ...(currentCardId ? { id: { not: currentCardId } } : {}),
+      },
+      select: { id: true },
+    })
+  ) {
     slug = `${baseSlug}-${suffix}`;
     suffix += 1;
   }
@@ -22,7 +30,7 @@ export async function createPlayerCard(formData: FormData) {
   requireAdmin();
 
   const data = playerCardSchema.parse(Object.fromEntries(formData));
-  const slug = await createUniqueSlug(data.slug);
+  const slug = await getUniqueSlug(data.slug);
 
   await prisma.playerCard.create({
     data: {
@@ -33,32 +41,38 @@ export async function createPlayerCard(formData: FormData) {
     },
   });
 
+  revalidatePath('/');
   revalidatePath('/cards');
   revalidatePath('/admin/cards');
+  revalidatePath(`/cards/${slug}`);
 }
 
 export async function updatePlayerCard(id: string, formData: FormData) {
   requireAdmin();
 
   const data = playerCardSchema.parse(Object.fromEntries(formData));
+  const slug = await getUniqueSlug(data.slug, id);
 
   await prisma.playerCard.update({
     where: { id },
     data: {
       ...data,
+      slug,
       photoUrl: data.photoUrl || null,
       rank: data.rank || null,
     },
   });
 
+  revalidatePath('/');
   revalidatePath('/cards');
-  revalidatePath(`/cards/${data.slug}`);
+  revalidatePath(`/cards/${slug}`);
   revalidatePath('/admin/cards');
 }
 
 export async function deletePlayerCard(id: string) {
   requireAdmin();
   await prisma.playerCard.delete({ where: { id } });
+  revalidatePath('/');
   revalidatePath('/cards');
   revalidatePath('/admin/cards');
 }
@@ -66,6 +80,7 @@ export async function deletePlayerCard(id: string) {
 export async function togglePlayerCardActive(id: string, isActive: boolean) {
   requireAdmin();
   await prisma.playerCard.update({ where: { id }, data: { isActive } });
+  revalidatePath('/');
   revalidatePath('/cards');
   revalidatePath('/admin/cards');
 }
