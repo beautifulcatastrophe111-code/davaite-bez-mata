@@ -1,2 +1,21 @@
 import './globals.css';
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang='en'><body className='max-w-6xl mx-auto p-6'>{children}</body></html>}
+import Link from 'next/link';
+import Breadcrumbs from '@/components/Breadcrumbs';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className="min-h-screen">
+        <div className="max-w-6xl mx-auto p-6">
+          <header className="mb-6">
+            <Link href="/" className="inline-block">
+              <h1 className="text-2xl font-bold">Dota Card Hub</h1>
+            </Link>
+          </header>
+          <Breadcrumbs />
+          {children}
+        </div>
+      </body>
+    </html>
+  );
+}
