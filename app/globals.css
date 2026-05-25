@@ -1,4 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body { @apply bg-slate-950 text-slate-100; }
+
+body { @apply bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100; }
+
+a { @apply text-cyan-300 hover:text-cyan-200 transition-colors; }
+
+main { @apply rounded-2xl border border-slate-700/70 bg-slate-900/40 p-5 backdrop-blur-sm; }
+
+button { @apply rounded-md bg-cyan-600 hover:bg-cyan-500 px-3 py-2 text-white transition-colors; }
+
+input, select, textarea { @apply bg-slate-100 text-slate-900; }
