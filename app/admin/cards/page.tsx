@@ -1,13 +1,25 @@
 import Link from 'next/link';
-import type { PlayerCard } from '@prisma/client';
 import AdminLayout from '@/components/AdminLayout';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 
+type CardRow = {
+  id: string;
+  nickname: string;
+  realName: string;
+  role: string;
+};
+
 export default async function Page() {
   requireAdmin();
 
-  const cards: PlayerCard[] = await prisma.playerCard.findMany({
+  const cards: CardRow[] = await prisma.playerCard.findMany({
+    select: {
+      id: true,
+      nickname: true,
+      realName: true,
+      role: true,
+    },
     orderBy: { updatedAt: 'desc' },
   });
 
@@ -16,7 +28,7 @@ export default async function Page() {
       <Link href="/admin/cards/new">Add</Link>
       <table>
         <tbody>
-          {cards.map((c: PlayerCard) => (
+          {cards.map((c: CardRow) => (
             <tr key={c.id}>
               <td>{c.nickname}</td>
               <td>{c.realName}</td>
