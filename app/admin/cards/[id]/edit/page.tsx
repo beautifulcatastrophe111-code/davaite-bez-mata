@@ -1,0 +1,2 @@
+import AdminLayout from '@/components/AdminLayout'; import AdminCardForm from '@/components/AdminCardForm'; import { updatePlayerCard } from '@/app/actions'; import { requireAdmin } from '@/lib/auth';
+export default function Page({params}:{params:{id:string}}){requireAdmin(); const action=updatePlayerCard.bind(null,params.id); return <AdminLayout><form action={action} className='grid gap-2 max-w-xl'><AdminCardForm/><button>Save</button></form></AdminLayout>}

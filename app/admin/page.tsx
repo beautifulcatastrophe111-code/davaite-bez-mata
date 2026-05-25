@@ -1,0 +1,2 @@
+import AdminLayout from '@/components/AdminLayout'; import { requireAdmin } from '@/lib/auth'; import { prisma } from '@/lib/prisma';
+export default async function Page(){requireAdmin(); const [all,active,weekly]=await Promise.all([prisma.playerCard.count(),prisma.playerCard.count({where:{isActive:true}}),prisma.weeklySquadSlot.findMany({include:{card:true}})]); return <AdminLayout><h1>Dashboard</h1><p>Total: {all} Active: {active}</p><ul>{weekly.map(w=><li key={w.id}>{w.position}: {w.card?.nickname||'—'}</li>)}</ul></AdminLayout>}

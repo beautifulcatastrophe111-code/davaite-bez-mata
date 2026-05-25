@@ -1,0 +1,1 @@
+export default function WeeklySquad({slots}:{slots:{position:string; nickname?:string|null}[]}){return <div className='grid md:grid-cols-3 gap-3'>{slots.map(s=><div key={s.position} className='border p-3 rounded'><div className='text-xs'>{s.position}</div><div>{s.nickname||'Empty slot'}</div></div>)}</div>}

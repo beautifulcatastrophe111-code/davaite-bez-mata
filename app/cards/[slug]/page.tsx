@@ -1,0 +1,2 @@
+import { notFound } from 'next/navigation'; import { prisma } from '@/lib/prisma'; import PlayerCard from '@/components/PlayerCard';
+export default async function CardPage({params}:{params:{slug:string}}){const card=await prisma.playerCard.findUnique({where:{slug:params.slug}}); if(!card) notFound(); return <main><PlayerCard card={card}/><p>{card.description}</p><p>Updated: {card.updatedAt.toISOString()}</p></main>}
