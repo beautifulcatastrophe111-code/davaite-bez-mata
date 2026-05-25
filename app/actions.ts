@@ -6,7 +6,16 @@ import { prisma } from '@/lib/prisma';
 import { playerCardSchema, weeklySchema } from '@/lib/validation';
 import { requireAdmin } from '@/lib/auth';
 
-async function getUniqueSlug(baseSlug: string, currentCardId?: string) {
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'player-card';
+}
+
+async function getUniqueSlug(baseValue: string, currentCardId?: string) {
+  const baseSlug = slugify(baseValue);
   let slug = baseSlug;
   let suffix = 2;
 
@@ -30,13 +39,14 @@ export async function createPlayerCard(formData: FormData) {
   requireAdmin();
 
   const data = playerCardSchema.parse(Object.fromEntries(formData));
-  const slug = await getUniqueSlug(data.slug);
+  const slug = await getUniqueSlug(data.slug || data.nickname);
 
   await prisma.playerCard.create({
     data: {
       ...data,
       slug,
       photoUrl: data.photoUrl || null,
+      country: data.country || null,
       rank: data.rank || null,
     },
   });
@@ -51,7 +61,7 @@ export async function updatePlayerCard(id: string, formData: FormData) {
   requireAdmin();
 
   const data = playerCardSchema.parse(Object.fromEntries(formData));
-  const slug = await getUniqueSlug(data.slug, id);
+  const slug = await getUniqueSlug(data.slug || data.nickname, id);
 
   await prisma.playerCard.update({
     where: { id },
@@ -59,6 +69,7 @@ export async function updatePlayerCard(id: string, formData: FormData) {
       ...data,
       slug,
       photoUrl: data.photoUrl || null,
+      country: data.country || null,
       rank: data.rank || null,
     },
   });
