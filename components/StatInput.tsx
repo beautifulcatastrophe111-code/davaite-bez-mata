@@ -1,0 +1,1 @@
+export default function StatInput({name,label,defaultValue=50}:{name:string;label:string;defaultValue?:number}){return <label className='block'><span>{label}</span><input min={1} max={99} type='number' name={name} defaultValue={defaultValue} className='text-black p-2 rounded w-full'/></label>}

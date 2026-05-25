@@ -1,0 +1,4 @@
+import { prisma } from '@/lib/prisma'; import CardsGrid from '@/components/CardsGrid'; import CardFilters from '@/components/CardFilters';
+export default async function CardsPage({searchParams}:{searchParams:Record<string,string|undefined>}){const where:any={isActive:true}; if(searchParams.search) where.OR=[{nickname:{contains:searchParams.search,mode:'insensitive'}},{realName:{contains:searchParams.search,mode:'insensitive'}}]; if(searchParams.role) where.role=searchParams.role; if(searchParams.rank) where.rank=searchParams.rank;
+const orderMap:any={rating_desc:{rating:'desc'},rating_asc:{rating:'asc'},newest:{createdAt:'desc'},oldest:{createdAt:'asc'},nickname_asc:{nickname:'asc'}}; const cards=await prisma.playerCard.findMany({where,orderBy:orderMap[searchParams.sort||'rating_desc']});
+return <main><h1 className='text-2xl mb-3'>All cards</h1><CardFilters/><CardsGrid cards={cards}/></main>}
