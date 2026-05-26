@@ -19,8 +19,8 @@ export default async function Home() {
         <CardsGrid cards={cards} />
       </div>
       <div className="flex gap-3">
-        <Link href="/cards">All cards</Link>
-        <Link href="/weekly-squad">Weekly squad</Link>
+        <Link href="/cards" className='btn-link'>All cards</Link>
+        <Link href="/weekly-squad" className='btn-link'>Weekly squad</Link>
       </div>
     </main>
   );

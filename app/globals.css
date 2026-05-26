@@ -7,6 +7,8 @@ a { @apply text-cyan-300 hover:text-cyan-200 transition-colors; }
 
 main { @apply rounded-2xl border border-slate-700/70 bg-slate-900/40 p-5 backdrop-blur-sm; }
 
-button { @apply rounded-md bg-cyan-600 hover:bg-cyan-500 px-3 py-2 text-white transition-colors; }
+button { @apply bg-cyan-600 hover:bg-cyan-500 px-3 py-2 text-white transition-colors; border-radius: 8px; }
+
+.btn-link { @apply inline-flex items-center justify-center bg-cyan-600 hover:bg-cyan-500 px-3 py-2 text-white no-underline transition-colors; border-radius: 8px; }
 
 input, select, textarea { @apply bg-slate-100 text-slate-900; }

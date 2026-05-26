@@ -25,7 +25,7 @@ export default async function Page() {
 
   return (
     <AdminLayout>
-      <Link href="/admin/cards/new">Add</Link>
+      <Link href="/admin/cards/new" className='btn-link'>Add</Link>
       <table>
         <tbody>
           {cards.map((c: CardRow) => (
@@ -34,7 +34,7 @@ export default async function Page() {
               <td>{c.realName}</td>
               <td>{c.role}</td>
               <td>
-                <Link href={`/admin/cards/${c.id}/edit`}>Edit</Link>
+                <Link href={`/admin/cards/${c.id}/edit`} className='btn-link'>Edit</Link>
               </td>
             </tr>
           ))}
