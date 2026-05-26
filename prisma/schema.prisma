@@ -15,6 +15,7 @@ model PlayerCard {
   photoUrl       String?
   rating         Int                @default(50)
   role           Role               @default(UNIVERSAL)
+  country        String?
   rank           Rank?
   favoriteHero   String?
   team           String?

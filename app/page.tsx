@@ -14,13 +14,12 @@ export default async function Home() {
   return (
     <main>
       <h1 className="text-3xl font-bold">Dota 2 Player Cards</h1>
-      <p>Fantasy/esports styled custom cards.</p>
       <div className="my-4">
         <CardsGrid cards={cards} />
       </div>
       <div className="flex gap-3">
-        <Link href="/cards">All cards</Link>
-        <Link href="/weekly-squad">Weekly squad</Link>
+        <Link href="/cards" className='btn-link'>All cards</Link>
+        <Link href="/weekly-squad" className='btn-link'>Weekly squad</Link>
       </div>
     </main>
   );
