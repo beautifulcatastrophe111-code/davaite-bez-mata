@@ -25,8 +25,19 @@ export default async function Page() {
 
   return (
     <AdminLayout>
-      <Link href="/admin/cards/new" className='btn-link'>Add</Link>
+      <div className='flex items-center justify-between mb-3'>
+        <h2>Cards</h2>
+        <Link href="/admin/cards/new" className='btn-link'>Add</Link>
+      </div>
       <table>
+        <thead>
+          <tr>
+            <th>Nickname</th>
+            <th>Real name</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
           {cards.map((c: CardRow) => (
             <tr key={c.id}>
