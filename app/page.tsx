@@ -14,7 +14,6 @@ export default async function Home() {
   return (
     <main>
       <h1 className="text-3xl font-bold">Dota 2 Player Cards</h1>
-      <p>Fantasy/esports styled custom cards.</p>
       <div className="my-4">
         <CardsGrid cards={cards} />
       </div>
