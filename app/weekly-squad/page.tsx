@@ -14,7 +14,7 @@ export default async function Page() {
       <WeeklySquad
         slots={slots.map((slot) => ({
           position: slot.position,
-          nickname: slot.card?.nickname,
+          card: slot.card,
         }))}
       />
     </main>
