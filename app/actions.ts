@@ -29,21 +29,33 @@ export async function updateWeeklySquad(formData:FormData){
   const parsed=weeklySchema.parse(Object.fromEntries(formData));
   const weekStart = getCurrentWeekStart();
 
-  const weekly = await prisma.weeklySquad.upsert({
-    where: { weekStart },
-    update: {},
-    create: { weekStart },
-  });
+  try {
+    const weekly = await prisma.weeklySquad.upsert({
+      where: { weekStart },
+      update: {},
+      create: { weekStart },
+    });
 
-  await Promise.all(
-    Object.entries(parsed).map(([position,cardId])=>
-      prisma.weeklySquadSlot.upsert({
-        where:{weeklySquadId_position:{weeklySquadId:weekly.id, position:position as any}},
-        update:{cardId:cardId||null},
-        create:{weeklySquadId:weekly.id, position:position as any, cardId:cardId||null},
+    await Promise.all(
+      Object.entries(parsed).map(([position,cardId])=>
+        prisma.weeklySquadSlot.upsert({
+          where:{weeklySquadId_position:{weeklySquadId:weekly.id, position:position as any}},
+          update:{cardId:cardId||null},
+          create:{weeklySquadId:weekly.id, position:position as any, cardId:cardId||null},
+        })
+      )
+    );
+  } catch {
+    const weeklySlotAny = (prisma as any).weeklySquadSlot;
+    await Promise.all(
+      Object.entries(parsed).map(async ([position, cardId]) => {
+        const updated = await weeklySlotAny.updateMany({ where: { position }, data: { cardId: cardId || null } });
+        if (!updated?.count) {
+          await weeklySlotAny.create({ data: { position, cardId: cardId || null } });
+        }
       })
-    )
-  );
+    );
+  }
 
   revalidatePath('/weekly-squad'); revalidatePath('/admin');
   redirect('/admin?notice=weekly_saved');

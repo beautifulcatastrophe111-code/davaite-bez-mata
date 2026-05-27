@@ -8,10 +8,17 @@ function weekLabel(date: Date) {
 }
 
 export default async function Page() {
-  const weeks = await prisma.weeklySquad.findMany({
-    orderBy: { weekStart: 'desc' },
-    include: { slots: { include: { card: true }, orderBy: { position: 'asc' } } },
-  });
+  let weeks: { id: string; weekStart: Date; slots: { position: string; card: any }[] }[] = [];
+  try {
+    weeks = await prisma.weeklySquad.findMany({
+      orderBy: { weekStart: 'desc' },
+      include: { slots: { include: { card: true }, orderBy: { position: 'asc' } } },
+    });
+  } catch {
+    const slots = await prisma.weeklySquadSlot.findMany({ include: { card: true }, orderBy: { position: 'asc' } });
+    const now = new Date();
+    weeks = [{ id: 'legacy', weekStart: now, slots: slots.map((s) => ({ position: s.position, card: s.card })) }];
+  }
 
   return (
     <main>

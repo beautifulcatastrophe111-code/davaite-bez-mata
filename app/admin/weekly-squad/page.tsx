@@ -24,10 +24,18 @@ export default async function Page() {
   const cards = await prisma.playerCard.findMany({ where: { isActive: true }, orderBy: { rating: 'desc' } });
   const currentWeekStart = getCurrentWeekStart();
 
-  const weeks = await prisma.weeklySquad.findMany({
-    orderBy: { weekStart: 'desc' },
-    include: { slots: { include: { card: true } } },
-  });
+  let weeks: { id: string; weekStart: Date; slots: { position: SquadPosition; cardId: string | null; card: { nickname: string } | null }[] }[] = [];
+  let isLegacyMode = false;
+  try {
+    weeks = await prisma.weeklySquad.findMany({
+      orderBy: { weekStart: 'desc' },
+      include: { slots: { include: { card: true } } },
+    });
+  } catch {
+    isLegacyMode = true;
+    const slots = await prisma.weeklySquadSlot.findMany({ include: { card: true } });
+    weeks = [{ id: 'legacy', weekStart: currentWeekStart, slots: slots.map((s) => ({ position: s.position as SquadPosition, cardId: s.cardId, card: s.card ? { nickname: s.card.nickname } : null })) }];
+  }
 
   const currentWeek = weeks.find((w) => w.weekStart.getTime() === currentWeekStart.getTime());
   const selectedCardsByPosition = new Map<SquadPosition, string | null>(
@@ -39,7 +47,7 @@ export default async function Page() {
   return (
     <AdminLayout>
       <h2>Weekly (текущая неделя: {weekLabel(currentWeekStart)})</h2>
-      <p className="text-slate-400">Редактируется только текущая неделя. Прошлые недели зафиксированы.</p>
+      <p className="text-slate-400">{isLegacyMode ? 'Legacy режим: таблицы по неделям ещё не применены в БД.' : 'Редактируется только текущая неделя. Прошлые недели зафиксированы.'}</p>
 
       <form action={updateWeeklySquad} className="grid gap-2 surface">
         {positions.map((position) => (
