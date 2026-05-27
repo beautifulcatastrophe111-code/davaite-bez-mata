@@ -28,16 +28,18 @@ export default async function Home() {
     <main>
       <h1 className="text-3xl font-bold">Лучшие игроки по позициям</h1>
 
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5 justify-items-center my-4">
+      <div className="flex flex-col gap-4 my-4">
         {topByRole.map(({ role, card }) => (
-          <section key={role} className="surface w-full flex flex-col items-center gap-3">
-            <h2 className="text-lg m-0">{positionLabels[role]}</h2>
+          <section key={role} className="surface w-full flex flex-col items-center gap-2">
+            <h2 className="text-base m-0">{positionLabels[role]}</h2>
             {card ? (
-              <Link href={`/cards/${card.slug}`}>
-                <PlayerCard card={card} />
+              <Link href={`/cards/${card.slug}`} className="block h-[360px] w-[240px] overflow-hidden">
+                <div className="origin-top-left scale-[0.8]">
+                  <PlayerCard card={card} />
+                </div>
               </Link>
             ) : (
-              <div className="w-[300px] h-[450px] rounded-2xl border border-dashed border-slate-600 grid place-items-center text-slate-400">
+              <div className="w-[240px] h-[360px] rounded-2xl border border-dashed border-slate-600 grid place-items-center text-slate-400 text-sm text-center p-3">
                 Нет карточки для этой позиции
               </div>
             )}
