@@ -27,14 +27,15 @@ export default async function Home() {
 
   return (
     <main>
-      <h1 className="text-3xl font-bold">Лучшие игроки по позициям</h1>
-
-      <div className="flex gap-3 mt-3 mb-4">
+      <div className="flex gap-3 mb-4">
         <Link href="/cards" className="btn-link">All cards</Link>
         <Link href="/weekly-squad" className="btn-link">Weekly squad</Link>
       </div>
 
-      <div className="flex flex-col gap-4 my-4">
+      <section className="surface">
+        <h1 className="text-3xl font-bold mt-0">Лучшие игроки по позициям</h1>
+
+        <div className="flex flex-col gap-4 my-4">
         {topByRole.map(({ role, cards }) => (
           <section key={role} className="surface w-full flex flex-col items-center gap-2">
             <h2 className="text-base m-0">{positionLabels[role]}</h2>
@@ -55,7 +56,8 @@ export default async function Home() {
             )}
           </section>
         ))}
-      </div>
+        </div>
+      </section>
     </main>
   );
 }
