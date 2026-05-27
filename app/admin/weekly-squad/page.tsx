@@ -37,6 +37,7 @@ export default async function Page() {
       SELECT wss.position::text AS position, wss."cardId" AS cardid, pc.nickname
       FROM "WeeklySquadSlot" wss
       LEFT JOIN "PlayerCard" pc ON pc.id = wss."cardId"
+      WHERE wss.position::text <> 'COACH'
       ORDER BY wss.position::text ASC
     `;
     weeks = [{
