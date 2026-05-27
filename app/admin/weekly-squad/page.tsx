@@ -33,8 +33,17 @@ export default async function Page() {
     });
   } catch {
     isLegacyMode = true;
-    const slots = await prisma.weeklySquadSlot.findMany({ include: { card: true } });
-    weeks = [{ id: 'legacy', weekStart: currentWeekStart, slots: slots.map((s) => ({ position: s.position as SquadPosition, cardId: s.cardId, card: s.card ? { nickname: s.card.nickname } : null })) }];
+    const slots = await prisma.$queryRaw<Array<{ position: string; cardid: string | null; nickname: string | null }>>`
+      SELECT wss.position::text AS position, wss."cardId" AS cardid, pc.nickname
+      FROM "WeeklySquadSlot" wss
+      LEFT JOIN "PlayerCard" pc ON pc.id = wss."cardId"
+      ORDER BY wss.position::text ASC
+    `;
+    weeks = [{
+      id: 'legacy',
+      weekStart: currentWeekStart,
+      slots: slots.map((s) => ({ position: s.position as SquadPosition, cardId: s.cardid, card: s.nickname ? { nickname: s.nickname } : null })),
+    }];
   }
 
   const currentWeek = weeks.find((w) => w.weekStart.getTime() === currentWeekStart.getTime());
