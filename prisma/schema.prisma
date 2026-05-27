@@ -35,12 +35,24 @@ model PlayerCard {
   weeklySlots    WeeklySquadSlot[]
 }
 
+model WeeklySquad {
+  id        String            @id @default(cuid())
+  weekStart DateTime          @unique
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  slots     WeeklySquadSlot[]
+}
+
 model WeeklySquadSlot {
-  id        String        @id @default(cuid())
-  position  SquadPosition @unique
-  cardId    String?
-  card      PlayerCard?   @relation(fields: [cardId], references: [id], onDelete: SetNull)
-  updatedAt DateTime      @updatedAt
+  id            String        @id @default(cuid())
+  weeklySquadId String
+  weeklySquad   WeeklySquad   @relation(fields: [weeklySquadId], references: [id], onDelete: Cascade)
+  position      SquadPosition
+  cardId        String?
+  card          PlayerCard?   @relation(fields: [cardId], references: [id], onDelete: SetNull)
+  updatedAt     DateTime      @updatedAt
+
+  @@unique([weeklySquadId, position])
 }
 
 enum Role {
@@ -77,5 +89,4 @@ enum SquadPosition {
   OFFLANE
   SUPPORT
   HARD_SUPPORT
-  COACH
 }
