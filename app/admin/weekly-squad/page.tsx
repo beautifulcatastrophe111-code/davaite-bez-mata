@@ -10,7 +10,6 @@ const positions: SquadPosition[] = [
   'OFFLANE',
   'SUPPORT',
   'HARD_SUPPORT',
-  'COACH',
 ];
 
 export default async function Page() {

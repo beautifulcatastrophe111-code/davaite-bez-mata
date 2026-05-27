@@ -15,12 +15,13 @@ const positionLabels: Record<string, string> = {
 export default async function Home() {
   const topByRole = await Promise.all(
     ['CARRY', 'MID', 'OFFLANE', 'SUPPORT', 'HARD_SUPPORT'].map(async (role) => {
-      const card = await prisma.playerCard.findFirst({
+      const cards = await prisma.playerCard.findMany({
         where: { isActive: true, role: role as any },
         orderBy: { rating: 'desc' },
+        take: 5,
       });
 
-      return { role, card };
+      return { role, cards };
     }),
   );
 
@@ -29,15 +30,19 @@ export default async function Home() {
       <h1 className="text-3xl font-bold">Лучшие игроки по позициям</h1>
 
       <div className="flex flex-col gap-4 my-4">
-        {topByRole.map(({ role, card }) => (
+        {topByRole.map(({ role, cards }) => (
           <section key={role} className="surface w-full flex flex-col items-center gap-2">
             <h2 className="text-base m-0">{positionLabels[role]}</h2>
-            {card ? (
-              <Link href={`/cards/${card.slug}`} className="block h-[360px] w-[240px] overflow-hidden">
-                <div className="origin-top-left scale-[0.8]">
-                  <PlayerCard card={card} />
-                </div>
-              </Link>
+            {cards.length ? (
+              <div className="flex flex-wrap justify-center gap-3">
+                {cards.map((card) => (
+                  <Link key={card.id} href={`/cards/${card.slug}`} className="block h-[270px] w-[180px] overflow-hidden">
+                    <div className="origin-top-left scale-[0.6]">
+                      <PlayerCard card={card} />
+                    </div>
+                  </Link>
+                ))}
+              </div>
             ) : (
               <div className="w-[240px] h-[360px] rounded-2xl border border-dashed border-slate-600 grid place-items-center text-slate-400 text-sm text-center p-3">
                 Нет карточки для этой позиции

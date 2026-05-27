@@ -12,7 +12,7 @@ export default async function Page() {
     <main>
       <h1>Weekly Squad</h1>
       <WeeklySquad
-        slots={slots.map((slot) => ({
+        slots={slots.filter((slot)=>slot.position!=='COACH').map((slot) => ({
           position: slot.position,
           card: slot.card,
         }))}
