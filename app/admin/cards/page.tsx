@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
+import { deletePlayerCard, togglePlayerCardActive } from '@/app/actions';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 
@@ -7,6 +8,7 @@ type CardRow = {
   id: string;
   nickname: string;
   role: string;
+  isActive: boolean;
 };
 
 export default async function Page() {
@@ -17,6 +19,7 @@ export default async function Page() {
       id: true,
       nickname: true,
       role: true,
+      isActive: true,
     },
     orderBy: { updatedAt: 'desc' },
   });
@@ -32,6 +35,7 @@ export default async function Page() {
           <tr>
             <th>Nickname</th>
             <th>Role</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -40,8 +44,15 @@ export default async function Page() {
             <tr key={c.id}>
               <td>{c.nickname}</td>
               <td>{c.role}</td>
-              <td>
+              <td>{c.isActive ? 'Visible' : 'Hidden'}</td>
+              <td className='flex flex-wrap gap-2'>
                 <Link href={`/admin/cards/${c.id}/edit`} className='btn-link'>Edit</Link>
+                <form action={togglePlayerCardActive.bind(null, c.id, !c.isActive)}>
+                  <button type='submit'>{c.isActive ? 'Hide' : 'Show'}</button>
+                </form>
+                <form action={deletePlayerCard.bind(null, c.id)}>
+                  <button type='submit' className='bg-red-700 hover:bg-red-600'>Delete</button>
+                </form>
               </td>
             </tr>
           ))}
