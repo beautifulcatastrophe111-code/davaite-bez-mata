@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 export default async function Page() {
   requireAdmin();
 
-  const [totalCards, activeCards, inactiveCards, avgRating, topCards, weekly] = await Promise.all([
+  const [totalCards, activeCards, inactiveCards, avgRating, topCards] = await Promise.all([
     prisma.playerCard.count(),
     prisma.playerCard.count({ where: { isActive: true } }),
     prisma.playerCard.count({ where: { isActive: false } }),
@@ -16,8 +16,14 @@ export default async function Page() {
       take: 5,
       select: { id: true, nickname: true, rating: true, role: true },
     }),
-    prisma.weeklySquadSlot.findMany({ include: { card: true }, orderBy: { position: 'asc' } }),
   ]);
+
+  let weekly: { id: string; position: string; card: { nickname: string; rating: number } | null }[] = [];
+  try {
+    weekly = await prisma.weeklySquadSlot.findMany({ include: { card: true }, orderBy: { position: 'asc' } }) as any;
+  } catch {
+    weekly = [];
+  }
 
   return (
     <AdminLayout>
