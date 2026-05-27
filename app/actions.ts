@@ -5,7 +5,9 @@ import { prisma } from '@/lib/prisma';
 import { playerCardSchema, weeklySchema } from '@/lib/validation';
 import { requireAdmin } from '@/lib/auth';
 
-function slugifyNickname(nickname:string){const slug=nickname.toLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-+|-+$/g,''); return slug||'player';}
+function slugifyNickname(nickname:string){const cyr:{[k:string]:string}={а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'ts',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya'};
+const translit=nickname.toLowerCase().split('').map((ch)=>cyr[ch]??ch).join('');
+const slug=translit.trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); return slug||'player';}
 function getCardTypeByRating(rating:number){if(rating>=95) return 'IMMORTAL'; if(rating>=85) return 'LEGENDARY'; if(rating>=75) return 'EPIC'; if(rating>=65) return 'RARE'; return 'COMMON';}
 async function buildUniqueSlug(nickname:string,excludeId?:string){const base=slugifyNickname(nickname); let slug=base; let i=1; while(true){const found=await prisma.playerCard.findUnique({where:{slug}}); if(!found || found.id===excludeId) return slug; i+=1; slug=`${base}-${i}`;}}
 
