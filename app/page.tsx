@@ -29,6 +29,11 @@ export default async function Home() {
     <main>
       <h1 className="text-3xl font-bold">Лучшие игроки по позициям</h1>
 
+      <div className="flex gap-3 mt-3 mb-4">
+        <Link href="/cards" className="btn-link">All cards</Link>
+        <Link href="/weekly-squad" className="btn-link">Weekly squad</Link>
+      </div>
+
       <div className="flex flex-col gap-4 my-4">
         {topByRole.map(({ role, cards }) => (
           <section key={role} className="surface w-full flex flex-col items-center gap-2">
@@ -36,25 +41,20 @@ export default async function Home() {
             {cards.length ? (
               <div className="flex flex-wrap justify-center gap-3">
                 {cards.map((card) => (
-                  <Link key={card.id} href={`/cards/${card.slug}`} className="block h-[270px] w-[180px] overflow-hidden">
-                    <div className="origin-top-left scale-[0.6]">
+                  <Link key={card.id} href={`/cards/${card.slug}`} className="block h-[315px] w-[210px] overflow-hidden">
+                    <div className="origin-top-left scale-[0.7]">
                       <PlayerCard card={card} />
                     </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="w-[240px] h-[360px] rounded-2xl border border-dashed border-slate-600 grid place-items-center text-slate-400 text-sm text-center p-3">
+              <div className="w-[210px] h-[315px] rounded-2xl border border-dashed border-slate-600 grid place-items-center text-slate-400 text-sm text-center p-3">
                 Нет карточки для этой позиции
               </div>
             )}
           </section>
         ))}
-      </div>
-
-      <div className="flex gap-3">
-        <Link href="/cards" className="btn-link">All cards</Link>
-        <Link href="/weekly-squad" className="btn-link">Weekly squad</Link>
       </div>
     </main>
   );
